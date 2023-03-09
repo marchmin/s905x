@@ -25,7 +25,6 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo apt-get update
         apt -y install gcc make pkg-config git bison flex libelf-dev libssl-dev libncurses5-dev bc
         wget https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz
         tar -Jxf gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz 
