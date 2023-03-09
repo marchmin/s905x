@@ -1,0 +1,46 @@
+# This workflow warns and then closes issues and PRs that have had no activity for a specified amount of time.
+#
+# You can adjust the behavior by modifying this file.
+# For more information, see:
+# https://github.com/actions/stale
+name: Mark stale issues and pull requests
+
+on: 
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'
+  #  branches: 
+  #    - master
+#  schedule:
+#    - cron: 0 8 * * 5
+ # watch:
+    #types: [started]
+
+jobs:
+ build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update
+        apt -y install gcc make pkg-config git bison flex libelf-dev libssl-dev libncurses5-dev bc
+        wget https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz
+        tar -Jxf gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz 
+        export ARCH=arm64 
+        export CROSS_COMPILE=`pwd`/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-  
+    - name: down source code
+      run: |
+        wget https://github.com/pazulin/Amlogic_s905-kernel/archive/refs/tags/20190226.tar.gz /opt/Amlogic_s905-kernel
+        tar -xvzf 20190226.tar.gz
+    - name: Build Firmware
+      run: |
+         cd /opt/Amlogic_s905-kernel/20190226
+         make modules 
